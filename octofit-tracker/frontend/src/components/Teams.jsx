@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 
 const getApiBaseUrl = () => {
-  const codespaceName = import.meta.env.VITE_CODESPACE_NAME
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+
   if (codespaceName) {
     return `https://${codespaceName}-8000.app.github.dev`
   }
@@ -43,7 +44,7 @@ function Teams() {
         const data = await response.json()
         setTeams(normalizeItems(data))
       } catch (err) {
-        setError(err.message)
+        setError(err instanceof Error ? err.message : 'Failed to fetch teams')
       } finally {
         setLoading(false)
       }

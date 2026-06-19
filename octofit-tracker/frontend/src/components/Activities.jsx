@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 
 const getApiBaseUrl = () => {
-  const codespaceName = import.meta.env.VITE_CODESPACE_NAME
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+
   if (codespaceName) {
     return `https://${codespaceName}-8000.app.github.dev`
   }
@@ -43,7 +44,7 @@ function Activities() {
         const data = await response.json()
         setActivities(normalizeItems(data))
       } catch (err) {
-        setError(err.message)
+        setError(err instanceof Error ? err.message : 'Failed to fetch activities')
       } finally {
         setLoading(false)
       }

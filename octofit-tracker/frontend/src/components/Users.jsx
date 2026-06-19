@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 
 const getApiBaseUrl = () => {
-  const codespaceName = import.meta.env.VITE_CODESPACE_NAME
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
+
   if (codespaceName) {
     return `https://${codespaceName}-8000.app.github.dev`
   }
@@ -9,10 +10,7 @@ const getApiBaseUrl = () => {
   return 'http://localhost:8000'
 }
 
-const getApiUrl = (path) => {
-  const baseUrl = getApiBaseUrl()
-  return `${baseUrl}${path}`
-}
+const getApiUrl = (path) => `${getApiBaseUrl()}${path}`
 
 const normalizeItems = (payload) => {
   if (Array.isArray(payload)) {
@@ -46,7 +44,7 @@ function Users() {
         const data = await response.json()
         setUsers(normalizeItems(data))
       } catch (err) {
-        setError(err.message)
+        setError(err instanceof Error ? err.message : 'Failed to fetch users')
       } finally {
         setLoading(false)
       }
