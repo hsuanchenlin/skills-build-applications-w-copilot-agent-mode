@@ -1,0 +1,12 @@
+{
+  "name": "octofit-tracker-root",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix octofit-tracker/backend\" \"npm run dev --prefix octofit-tracker/frontend\"",
+    "dev:backend": "npm run dev --prefix octofit-tracker/backend",
+    "dev:frontend": "npm run dev --prefix octofit-tracker/frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
