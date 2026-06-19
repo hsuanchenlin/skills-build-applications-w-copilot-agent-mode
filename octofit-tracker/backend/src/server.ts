@@ -62,9 +62,125 @@ app.get(['/api/workouts', '/api/workouts/'], async (_req, res) => {
   await sendCollection(res, Workout, 'workouts');
 });
 
+const seedIfEmpty = async () => {
+  const counts = await Promise.all([
+    User.countDocuments(),
+    Team.countDocuments(),
+    Activity.countDocuments(),
+    Leaderboard.countDocuments(),
+    Workout.countDocuments(),
+  ]);
+
+  const hasData = counts.some((count) => count > 0);
+
+  if (hasData) {
+    return;
+  }
+
+  await Promise.all([
+    User.insertMany([
+      {
+        username: 'alex_runner',
+        email: 'alex@example.com',
+        password: 'hashedpassword1',
+        age: 29,
+        height: 180,
+        weight: 78,
+        fitnessGoal: 'Improve endurance',
+      },
+      {
+        username: 'jamie_fit',
+        email: 'jamie@example.com',
+        password: 'hashedpassword2',
+        age: 32,
+        height: 165,
+        weight: 60,
+        fitnessGoal: 'Build strength',
+      },
+      {
+        username: 'taylor_power',
+        email: 'taylor@example.com',
+        password: 'hashedpassword3',
+        age: 27,
+        height: 172,
+        weight: 68,
+        fitnessGoal: 'Lose weight',
+      },
+    ]),
+    Team.insertMany([
+      {
+        name: 'Trail Blazers',
+        members: ['alex_runner', 'jamie_fit', 'taylor_power'],
+        captain: 'alex_runner',
+        goal: 'Complete 5 weekend hikes',
+      },
+      {
+        name: 'Power Squad',
+        members: ['jamie_fit', 'taylor_power'],
+        captain: 'jamie_fit',
+        goal: 'Hit weekly strength goals',
+      },
+    ]),
+    Activity.insertMany([
+      {
+        username: 'alex_runner',
+        type: 'Running',
+        duration: 45,
+        calories: 420,
+        date: '2026-06-18',
+      },
+      {
+        username: 'jamie_fit',
+        type: 'Weight Training',
+        duration: 60,
+        calories: 350,
+        date: '2026-06-18',
+      },
+      {
+        username: 'taylor_power',
+        type: 'Cycling',
+        duration: 30,
+        calories: 240,
+        date: '2026-06-19',
+      },
+    ]),
+    Leaderboard.insertMany([
+      { username: 'alex_runner', score: 980, rank: 1 },
+      { username: 'jamie_fit', score: 940, rank: 2 },
+      { username: 'taylor_power', score: 900, rank: 3 },
+    ]),
+    Workout.insertMany([
+      {
+        name: 'Morning HIIT',
+        type: 'Cardio',
+        duration: 20,
+        difficulty: 'Intermediate',
+        recommendedFor: ['alex_runner', 'taylor_power'],
+      },
+      {
+        name: 'Core Strength',
+        type: 'Strength',
+        duration: 30,
+        difficulty: 'Beginner',
+        recommendedFor: ['jamie_fit'],
+      },
+      {
+        name: 'Endurance Ride',
+        type: 'Cycling',
+        duration: 40,
+        difficulty: 'Advanced',
+        recommendedFor: ['alex_runner', 'taylor_power'],
+      },
+    ]),
+  ]);
+
+  console.log('Seeded sample data for all collections');
+};
+
 const startServer = async () => {
   try {
     await connectDB();
+    await seedIfEmpty();
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
