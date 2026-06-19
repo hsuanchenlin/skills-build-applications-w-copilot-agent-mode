@@ -17,7 +17,6 @@ const API_BASE_URL = codespaceName
 
 app.use(cors());
 app.use(express.json());
-
 const sendCollection = async (
   res: express.Response,
   model: mongoose.Model<any>,
