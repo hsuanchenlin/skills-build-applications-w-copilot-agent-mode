@@ -4,13 +4,11 @@ const getApiBaseUrl = () => {
   const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim()
 
   if (codespaceName) {
-    return `https://${codespaceName}-8000.app.github.dev`
+    return `https://${codespaceName}-8000.app.github.dev/api/workouts`
   }
 
-  return 'http://localhost:8000'
+  return 'http://localhost:8000/api/workouts'
 }
-
-const getApiUrl = (path) => `${getApiBaseUrl()}${path}`
 
 const normalizeItems = (payload) => {
   if (Array.isArray(payload)) {
@@ -36,7 +34,7 @@ function Workouts() {
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const response = await fetch(getApiUrl('/api/workouts/'))
+        const response = await fetch(getApiBaseUrl())
         if (!response.ok) {
           throw new Error('Failed to fetch workouts')
         }
